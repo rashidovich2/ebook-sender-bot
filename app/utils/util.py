@@ -26,7 +26,7 @@ def get_book_meta(i: str):
     if i.split('.')[-1].lower() not in supported_formats_for_reading_meta:
         return book_meta
     ebook_meta = 'ebook-meta.exe' if is_windows() else 'ebook-meta'
-    if not os.path.exists(i) or ebook_meta == '':
+    if not os.path.exists(i) or not ebook_meta:
         return book_meta
     result, _ = __run_command([ebook_meta, i, '--get-cover', os.path.dirname(i) + os.sep + 'cover.png'])
     if len(result.splitlines()) <= 2:
@@ -35,7 +35,7 @@ def get_book_meta(i: str):
     for line in result.splitlines():
         if line.find(':') < 0:
             continue
-        for key in book_meta.keys():
+        for key in book_meta:
             # line="Title               : Lawrence Block Eight Million Ways to Die"
             # first_part = "Title               "
             # second_part = " Lawrence Block Eight Million Ways to Die"
@@ -65,13 +65,15 @@ def convert_book(i: str, file_ext='mobi', o='') -> (bool, str):
     """Convert ebook to mobi format"""
     supported_formats_for_converting = (
         'azw', 'azw1', 'azw3', 'azw4', 'epub', 'mobi', 'kfx', 'fb2', 'html', 'lit', 'lrf', 'pdb')
-    if i.split('.')[-1].lower() not in supported_formats_for_converting \
-            or os.path.splitext(i)[1].lower() == "." + file_ext:
+    if (
+        i.split('.')[-1].lower() not in supported_formats_for_converting
+        or os.path.splitext(i)[1].lower() == f".{file_ext}"
+    ):
         return True, i
     if o == '':
-        o = os.path.splitext(i)[0] + "." + file_ext
+        o = f"{os.path.splitext(i)[0]}.{file_ext}"
     ebook_convert = 'ebook-convert.exe' if is_windows() else 'ebook-convert'
-    if not os.path.exists(i) or ebook_convert == '':
+    if not os.path.exists(i) or not ebook_convert:
         return False, ''
     if os.path.exists(o):
         return True, o

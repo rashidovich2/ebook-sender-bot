@@ -101,7 +101,7 @@ class TgBot:
                     update.message.reply_photo(open(book_meta['cover_path'], 'rb'))
                     del book_meta['cover_path']
                 reply_msg = ""
-                for key in book_meta.keys():
+                for key in book_meta:
                     if book_meta[key] != 'Unknown':
                         reply_msg += f"<b>{key}:</b> <pre>{book_meta[key]}</pre>\r\n\r\n"
                 if reply_msg == "":
@@ -172,7 +172,4 @@ class MessageReply:
 
     @send_msg_decorator
     def send_text(self, update: Update, msg: str):
-        if update is None or update.message.from_user.id is None:
-            return None
-
-        return msg
+        return None if update is None or update.message.from_user.id is None else msg

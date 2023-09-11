@@ -32,12 +32,10 @@ class User:
         return self.userModel.today_send_times()
 
     def get_ebook_type(self) -> str:
-        if self.email.endswith("@kindle.com"):
-            return "epub"
-        return "mobi"
+        return "epub" if self.email.endswith("@kindle.com") else "mobi"
 
     def set_email(self, email: str = '') -> str:
-        if email == '':
+        if not email:
             if self.email == '':
                 raise NotifyException('emailErrorNotification')
             else:
